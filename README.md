@@ -75,35 +75,81 @@ However, a longer post is not necessarily more substantial. A short post with a 
      The decision rule is worth a point on its own and it's the thing most
      people leave out. Every taxonomy has a hardest boundary. Name yours. -->
 
-### `label_one`
+### `technical_help`
 
-**Definition:**
-
-**Example 1:**
->
-
-**Example 2:**
->
-
-### `label_two`
-
-**Definition:**
+**Definition:** A post requesting help diagnosing or resolving a specific programming error, unexpected behavior, or implementation problem, even if it also describes a project or learning experience.
 
 **Example 1:**
->
+
+> "Python code takes 10-20 seconds to start — Hello, I started learning python recently I dowloaded it, also vs code and python extension for it. The poblem is, when I start a programm (even a simple one, whick only takes an input fron the user and prits it) takes 10 or more seconds to start or just dosen't work at all then i clic soething and it kindof crashes itself, but thats my fault for mesinf with it, when I leave it, it just takes really lng dose somone know how to fix it and/or how to make folders proporly and where to keep them (could be the problem)?"
 
 **Example 2:**
->
+
+> "Why is the program showing invalid when the number is within the range? — int user_year; // input year cout > user_year; while(user_year > 2099 || user_year The user input needs to be greater than 1900 and less than 2099, so 1900 - 2099. Whenever I input a value in between those numbers such as 2010, it gives invalid input. What I want if user_year is outside the specified range indicate ""Invalid input"" but loop back to user input. I used an if statement but the problem was that it did not loop back to cin EDIT: HERE IS MY ORIGINAL CODE while (!(cin >> user_year) || user_year 2099) { cin.clear(); cin.ignore(10000, '\n'); cout FIXED: I had a function in my program and it was causing it to return 0 as the year. but the code above is correct"
+
+### `learning_guidance`
+
+**Definition:** A post requesting advice on learning programming, including study methods, learning resources, understanding concepts, overcoming difficulties, or choosing what and how to learn.
+
+**Example 1:**
+
+> "Starting from Zero in C++ — Hi everyone! I’m pursuing CSE at a Tier-4 college and have zero programming knowledge. I’m entering the tech field for the first time and want to start with C++ from scratch. What’s the best way to learn C++? Which free resources would you recommend, and what common mistakes should I avoid? Also, how should I build my coding and problem-solving skills to become internship- and job-ready?"
+
+**Example 2:**
+
+> Resources to better coding — Hi! Can anyone suggest interactive resources to study DSA and Object Oriented Python like that of deeplearning.ai to learn machine learning and deep learning.
+
+### `development_decision`
+
+**Definition:** A post requesting advice on choosing implementation technologies, project directions, or career paths, excluding decisions primarily about learning.
+
+**Example 1:**
+
+> "It is worth be a Front End Dev? — I'm Starting to be a FrontEnd Dev but I saw lot of jobs that require Full stack or some of Back End, In my Learn I was trying just to be a Only Front End but sometimes you search and all the jobs want a Full stack or want Back End. ¿Do you think can people be a only Front End Dev or have to learn Backend too obligatory?"
+
+**Example 2:**
+
+> "Choosing the Right Tech Stack for My First Full-Stack Project — I have learned the basics of programming and web development, and I want to build my first real-world full-stack project: an e-commerce website for a clothing brand, for which I already have a client. I want to make it professional, from UI/UX design and database architecture to security, testing, and deployment. What tech stack would you recommend? Finally, how important is the tech stack to recruiters? If a company uses different technologies from those I used in my project, could this put me at a disadvantage during a technical interview? What advice would you give me to make this project stand out in my portfolio and prepare for interviews? Thank you in advance for your advice!"
+
+### `experience_sharing`
+
+**Definition:** A post sharing a programming achievement, project, or personal experience without requesting a specific technical solution, learning recommendation, or development decision.
+
+**Example 1:**
+
+> "im kinda proud of this solution i wrote even though it was an ""easy"" i still felt like i grew a lot — the problem: Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid. An input string is valid if: Open brackets must be closed by the same type of brackets. Open brackets must be closed in the correct order. Every close bracket has a corresponding open bracket of the same type. Example 1: Input: s = ""()"" Output: true Example 2: Input: s = ""()[]{}"" Output: true Example 3: Input: s = ""(]"" Output: false Example 4: Input: s = ""([])"" Output: true Example 5: Input: s = ""([)]"" Output: false my solution: (on leetcode) class Solution: def isValid(self, s: str) -> bool: inputs = { ""("":1, "")"":9, ""{"":2, ""}"":8, ""["":3, ""]"":7} prev_bracket=[] if(len(s)%2!=0): return False for a in s: if inputs[a]"
+
+**Example 2:**
+
+> "First job anxiety — ​ I recently got a job from a totally new field I have not worked in before, software development to be exact. My only experience with this is from school, which was very thin and some very small testing I've done myself. They all know I'm new to this, but lack of training and guiding is what gives me anxiety. Everything is huge (codebases, databases, everything) and even the field the company's software is for, is very foreign to me. The HR ""training"" was good and I was told that the other employees will help me out, but in fact they all seem to be very distant and while they do help a bit, I feel like they want to get out of the situation asap. My first days have been going through codebase and db and trying to figure out how everything works. I was given a task to implement a small feature, but no one is aware of that and the answers I get, don't necessarily answer my questions. I feel overwhelmed, anxious and exhausted already. I feel like I'm supposed to do stuff already, but I also feel like I'm a burden. The team is quite small and everyone got their hands full of work already. I know a lot of you have been in this same situation. Did things figure themselves out at a time or how it ended? Cheers!"
 
 ### The hardest boundary
 
-**Which two labels:**
+**Which two labels:** `learning_guidance` vs `development_decision`
 
 **The decision rule I used every time:**
-<!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
-     if the tone is heated." -->
 
+Some posts involve choosing between programming languages, technologies, or projects, but the reason behind the choice determines the label.
 
+If the author is deciding what or how to learn, including choosing programming languages for study, courses, or learning methods, I classify the post as `learning_guidance`.
+
+If the author is choosing technologies for an actual implementation, deciding which project to build, or selecting a professional career direction, I classify the post as `development_decision`.
+
+For example, someone asking whether to learn C before C++ is seeking `learning_guidance`, while someone deciding whether to build a Linux process-monitoring project is seeking a `development_decision`.
+
+**Handling posts with multiple requests:**
+
+> Added this after having AI stree test my label definitions
+
+When a post contains multiple requests, I first check whether the title contains an explicit question or request that matches one of my four labels. If it does, I use that request to determine the label.
+
+If the title does not contain a request that matches a label, I use the final explicit question or request in the post body.
+
+If neither the title nor the body contains a specific request, I classify the post as `experience_sharing`, provided it describes a programming experience, achievement, or project.
+
+If the selected request contains multiple types of help, I use the following priority order: `technical_help` > `learning_guidance` > `development_decision`.
+
+Mentioning an error, technology, or personal experience does not automatically determine the label. The request must match the label's definition.
 
 ---
 
@@ -215,6 +261,7 @@ of next unit's variance. -->
 | F1 — `label_two` |  |  |  |
 
 **What I predicted before I looked:**
+
 <!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
      prediction made afterwards isn't one. -->
 
@@ -377,6 +424,7 @@ learned:**
 <!-- Two sentences. Your confusion matrix is the evidence. -->
 
 
+<!-- Two sentences. Your confusion matrix is the evidence. -->
 
 <!-- ═════════════════════════════════════════════════════════════════════
 
