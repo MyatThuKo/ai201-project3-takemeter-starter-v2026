@@ -39,10 +39,31 @@
 
 ## What This Does
 
-<!-- Your community, and what your classifier sorts posts into. Three or four
-     sentences. -->
+TakeMeter is a text classification project that uses posts from Reddit's `r/learnprogramming` community to categorize programming-related discussions. The goal is to fine-tune a language model to recognize different types of posts based on their content.
 
+### Community Selection and Observations (Milestone 1)
 
+I selected r/learnprogramming because the community contains a variety of programming-related questions, technical discussions, and personal experiences. The posts generally contain enough written context for text classification.
+
+After reviewing approximately 40 posts from the collected dataset, I noticed four recurring distinctions:
+
+1. **Learning Resources and Guidance:** Users ask for tutorials, courses, books, and advice on how to begin learning programming.
+
+2. **Technical Problems and Debugging:** Users describe programming issues, often including code snippets, error messages, or unexpected behavior.
+
+3. **Learning Struggles and Experiences:** Users discuss difficulties understanding concepts, solving problems independently, or staying motivated.
+
+4. **Technology and Career Decisions:** Users ask for help choosing programming languages, frameworks, career paths, or development technologies.
+
+Some posts overlap between these distinctions. For example, someone struggling to learn Python might also ask for learning resources. This suggests that clear definitions and decision rules will be necessary when designing the final labels.
+
+These observations will guide the label taxonomy developed in Milestone 2.
+
+### Differences in Post Quality
+
+I noticed that some posts provide more detailed context than others. For example, technical questions that include code snippets, error messages, and explanations of what the user has already attempted are generally more substantial because other community members can better understand the problem and provide specific solutions. In contrast, some posts ask broad questions about learning programming without explaining their experience, goals, or challenges, making it harder for others to provide useful advice.
+
+However, a longer post is not necessarily more substantial. A short post with a clear question and relevant details can still be more useful than a lengthy post without a specific purpose.
 
 ---
 
