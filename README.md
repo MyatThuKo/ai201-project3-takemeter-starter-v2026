@@ -158,45 +158,52 @@ Mentioning an error, technology, or personal experience does not automatically d
 <!-- Where you collected from, how you labelled, your counts, and three hard
      cases. -->
 
-**Where the posts came from:**
+**Where the posts came from:** The posts come from subreddit `r/learnprogramming`
 
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+**How I labelled them:**
+
+- 20 posts labelled cold
+- 190 pre-labelled by Claude, and manually checked
+- 22 corrected
+- 4 posts that fit no label were excluded and replaced, logged in data/excluded_posts.csv
 
 **Counts per label:**
 
-| Label | Count | Share |
-|---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| Label                | Count | Share |
+| -------------------- | ----- | ----- |
+| learning_guidance    | 105   | 50%   |
+| development_decision | 65    | 31%   |
+| technical_help       | 21    | 10%   |
+| experience_sharing   | 19    | 9%    |
+| **Total**            | 210   | 100%  |
 
 **Three hard cases**
 
-<!-- Any post that made you pause: what it was, which two labels it could have
-     been, and what you chose. These are worth more than the easy 190. -->
-
 **1.**
-> *The post:*
->
-> *Could have been:*
->
-> *I chose, because:*
+
+> _The post:_
+> "Plugin system for multi platform rust application — Hi, I'm building so I'm making a peer to peer reading tracker that has multiple native clients (one for my Linux laptop and one for my android phone) with a Rust core that handles most of the actual logic and the client being in C and GTK4 for my Linux client and Kotlin for my android app. The thing is I want to have cover source logic behind plugins since that's never really stable and I don't want to have to rebuild my app at every new source I want to add either. Is there a tool that helps with that? (Sorry if this is a dumb question or if my explanation isn't very clear.)"
+> _Could have been:_ `technical_help` or `development_decision`
+
+> _I chose, because:_ chose `development_decision` because the author is asking for guidance on which tool or architectural approach to use for their plugin system. They are not describing an existing error or unexpected behavior that needs fixing. Instead, they want to determine the appropriate implementation direction for their application, which fits `development_decision` better than `technical_help`.
 
 **2.**
-> *The post:*
->
-> *Could have been:*
->
-> *I chose, because:*
+
+> _The post:_
+> "Feedback on HammingCube: a 3D parity code implemented in C11 — Hi! I've been exploring error-correcting codes through a small C11 project called HammingCube. It implements a three-dimensional product of single-parity-check codes (not the classical Hamming code). It encodes 64 data bits into 125 bits, corrects up to three unknown bit flips, and recovers up to seven erasures when their positions are known. The repo includes a CLI, tests, and a lesson-style README explaining the math. I used AI assistance while developing the code and documentation, and I'd appreciate independent human feedback. In particular: Do you see correctness or edge-case problems in the erasure decoder's GF(2) elimination? Is the C API clear about invalid, ambiguous, and successfully recovered inputs? Is the README's explanation of the distance-8 guarantee understandable? Repo: https://github.com/piecatdev/HammingCube"
+
+> _Could have been:_ `technical_help` or `development_decision`
+
+> _I chose, because:_ I chose `development_decision` because the author has already implemented a project and is requesting feedback about its API design, correctness, and documentation. I classified it as `development_decision` because some questions concern whether the implementation and design choices are appropriate. However, `technical_help` is also reasonable because the author explicitly asks reviewers to identify correctness problems and edge cases in the code
 
 **3.**
-> *The post:*
->
-> *Could have been:*
->
-> *I chose, because:*
+
+> _The post:_
+> "Should I stick with Java or switch to JavaScript? Am I struggling because Java is difficult, or am I choosing the wrong path? — I'm transitioning from data analytics to software engineering, and I've been torn between pursuing Java and JavaScript. I've been learning Java through Hyperskill, but lately, I've been questioning whether I made the right choice. One of my main reasons for choosing Java is that it's widely used by large enterprises and big companies. Coming from a developing country, I'd like to eventually work overseas, and I feel that Java might give me a better chance of landing that kind of opportunity. I also wonder whether enterprise Java jobs offer more stability and a clearer career path than JavaScript jobs, although I'm not sure if that's actually true. My impression is that JavaScript has a lower barrier to entry, which makes the field feel more saturated. I imagine I might end up working as a freelancer, joining a consultancy, or working remotely for an overseas company rather than relocating abroad. Of course, I could be completely wrong about these assumptions, so I'd appreciate hearing from people with experience in both ecosystems. I've also heard people say that JavaScript developers have to constantly keep up with new frameworks and changing technologies, which can lead to burnout. In contrast, I've heard that Java's ecosystem is more stable and that its core technologies don't change as rapidly. As I get older, I find myself less willing to spend all my time keeping up with new technologies. I'd rather build a solid set of skills that remain useful for years and use the mental energy I have left to enjoy other aspects of life. Interestingly, I also enjoy Java in a way I didn't quite experience with Python. I feel like I'm actually programming and building things rather than just writing scripts for data analysis. There's something satisfying about it that makes me want to keep going. The problem is that whenever I encounter a particularly challenging assignment, I start questioning my decision. Sometimes, I feel like I could solve the same problem much more easily in Python. With Java, I'm constantly running into concepts, syntax, and unfamiliar ways of doing things that I don't fully understand yet. It feels like trying to survive in a foreign country without speaking the local language. This makes me wonder whether I'm struggling because Java genuinely isn't the right fit for me, or whether I'm simply going through the uncomfortable learning curve that comes with learning a new language and moving into software engineering. Part of me wants to switch to JavaScript because it might be easier to learn and allow me to make progress faster. Another part of me wonders whether I'd just be running away from the difficulty instead of pushing through the stage where everything feels unfamiliar. Since I'm in my mid-20s, I want to break into software engineering as quickly as possible. JavaScript feels like it might help me get there sooner, while Java feels like more of a gamble because of the commitment and steep learning curve involved before I can see the results of my efforts. So, for those of you who have learned Java or transitioned into software engineering from another field: - Did you go through a similar phase where you questioned your choice of programming language? - Is sticking with Java worth it if my long-term goal is to work for a large company, potentially overseas? - If you've worked with both Java and JavaScript, how different are their job markets, career opportunities, and long-term prospects in practice? - How did you know whether you were struggling because of the learning curve or because you were pursuing the wrong path? To be honest, I might be posting this partly because I want someone to tell me that it's normal for Java to feel difficult at first and that things will eventually click. But I'd genuinely appreciate honest advice, even if it means reconsidering my current path. Thank you!"
+
+> _Could have been:_ `learning_guidance` or `development_decision`
+
+> _I chose, because:_ I chose `development_decision` because the author discusses difficulties learning Java but also compares Java and JavaScript based on job opportunities, long-term stability, and a possible transition into software engineering. I classified it as `development_decision` because the choice is closely connected to the author's professional career direction rather than simply understanding a programming concept. However, `learning_guidance` is also reasonable because the author asks whether their struggles are part of the normal learning process.
 
 ---
 
