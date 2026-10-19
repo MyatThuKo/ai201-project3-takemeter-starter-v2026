@@ -211,17 +211,19 @@ Mentioning an error, technology, or personal experience does not automatically d
 
 <!-- Your starting model, your settings, and anything you changed and why. -->
 
-**Base model:**
+**Base model:** distilbert-base-uncased
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Settings:** 3 epochs, learning rate 2e-5, batch size 16, seed 42, max length 128. No changes from the defaults.
 
-**Anything I changed from the defaults, and why:**
+**Device:** mps, Apple Silicon GPU, torch 2.14.1
 
-**Split sizes:** <!-- train / val / test, and per-label counts in the test
-split. If a label had fewer than about 8 in test, say so — it explains a lot
-of next unit's variance. -->
+**Anything I changed from the defaults, and why:** I kept the default training settings to establish an initial baseline before experimenting with different configurations in Unit 6. The only changes were configuring the notebook with my four custom labels and personal information.
 
+**Split sizes:** about 147 train / 31 val / 32 test. In the test split: learning_guidance 16, development_decision 10, technical_help 3 and experience_sharing 3. Note that the last two are under 8 examples each.
 
+**Initial Results:** The model achieved 50% test accuracy and a macro F1 score of 0.167 on 32 held-out posts. `learning_guidance` achieved an F1 score of 0.667, while `technical_help`, `development_decision`, and `experience_sharing` each scored 0.000.
+
+The confusion matrix showed that the model predicted `learning_guidance` for all 32 test posts. This suggests that the initial model did not successfully distinguish the four categories. Possible contributing factors include class imbalance, the small dataset, and truncation of longer posts at 128 tokens. I will investigate these issues in Unit 6 while preserving the original results for comparison.
 
 ---
 
