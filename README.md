@@ -39,7 +39,7 @@
 
 ## What This Does
 
-TakeMeter is a text classification project that uses posts from Reddit's `r/learnprogramming` community to categorize programming-related discussions. The goal is to fine-tune a language model to recognize different types of posts based on their content.
+TakeMeter is a text classification project that uses posts from Reddit's `r/learnprogramming` community to categorize programming-related discussions. The classifier sorts posts into four categories: `technical_help` for debugging and implementation problems, `learning_guidance` for learning resources and study advice, `development_decision` for technology, project, and career choices, and `experience_sharing` for personal programming experiences and achievements. I fine-tuned a DistilBERT model using manually reviewed Reddit posts to see whether it could distinguish these categories based on their content.
 
 ### Community Selection and Observations (Milestone 1)
 
@@ -236,19 +236,25 @@ The confusion matrix showed that the model predicted `learning_guidance` for all
      workflow and disclosing it costs you nothing. Not disclosing it is the
      problem. -->
 
-**Moment 1**
+**Moment 1** Stress-testing my label definitions (Milestone 2)
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- _What I asked for:_ I asked Claude to generate eight borderline programming posts that could reasonably fit more than one of my four labels. I wanted to test whether my definitions and decision rules were clear enough to classify ambiguous posts consistently.
+- _What came back:_ Claude generated eight examples, including posts involving decisions about which programming languages to learn, projects to build, and career directions. While independently labeling them, I found inconsistencies between my `learning_guidance` and `development_decision` definitions. Some posts with similar structures received different labels.
+- _What I changed:_ I revised my definitions to distinguish learning decisions from implementation and career decisions. I also added a rule for posts containing multiple requests: use an explicit request in the title first, otherwise use the final explicit question in the body. For requests matching multiple categories, I established a priority order of `technical_help` > `learning_guidance` > `development_decision`.
 
-**Moment 2**
+**Moment 2** AI-assisted pre-labeling and manual corrections (Milestone 4)
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- _What I asked for:_ After independently labeling my first 20 Reddit posts, I asked Claude Code to pre-label the remaining 190 posts using the definitions and decision rules in my README.
+- _What came back:_ Claude Code assigned labels to all 190 posts and flagged 51 as uncertain because they could reasonably fit multiple categories. Initially, `learning_guidance` accounted for approximately 61% of the dataset.
+- _What I changed:_ I manually read and checked every AI-labeled post. I corrected 22 labels based on my own interpretation and written decision rules. For example, I classified the Rust plugin-system post as `development_decision` because the author was asking which architectural approach to take rather than reporting an existing error. I also excluded four posts that did not fit my taxonomy and reviewed their replacements. My final dataset contains 210 labeled posts.
 
 **Pre-labelling disclosure:**
+
+I used Claude to write the script that collected public Reddit posts through Reddit's RSS feed. I initially explored `r/soccer`, but the posts were dominated by video highlights and had insufficient written content for my classification task. A few days after downloading those data, some of the posts were blocked/deleted by the community guidelines. I therefore switched to `r/learnprogramming`.
+
+I labeled the first 20 posts independently without any AI assistance and marked them `cold` in `labels.csv`. Claude Code pre-labeled the remaining 190 posts, after which I personally reviewed every suggested label and corrected 22 of them. I also reviewed four replacement posts suggested by AI after excluding posts that did not fit my definitions.
+
+Claude Code helped with data collection, stress-testing, and initial classification suggestions, but I made the final decisions about the taxonomy, label corrections, and acceptance criteria.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
