@@ -39,7 +39,7 @@
 
 ## What This Does
 
-TakeMeter is a text classification project that uses posts from Reddit's `r/learnprogramming` community to categorize programming-related discussions. The classifier sorts posts into four categories: `technical_help` for debugging and implementation problems, `learning_guidance` for learning resources and study advice, `development_decision` for technology, project, and career choices, and `experience_sharing` for personal programming experiences and achievements. I fine-tuned a DistilBERT model using manually reviewed Reddit posts to see whether it could distinguish these categories based on their content.
+TakeMeter is a text classification project that uses posts from Reddit's `r/learnprogramming` community to categorize programming-related discussions. The classifier sorts posts into four categories: `technical_help` for debugging and implementation problems, `learning_guidance` for learning resources and study advice, `development_decision` for technology, project, and career choices, and `experience_sharing` (my fourth, stretch label) for posts that share an experience or achievement without asking for anything. I fine-tuned a DistilBERT model using manually reviewed Reddit posts to see whether it could distinguish these categories based on their content.
 
 ### Community Selection and Observations (Milestone 1)
 
@@ -122,6 +122,16 @@ However, a longer post is not necessarily more substantial. A short post with a 
 **Example 2:**
 
 > "First job anxiety — ​ I recently got a job from a totally new field I have not worked in before, software development to be exact. My only experience with this is from school, which was very thin and some very small testing I've done myself. They all know I'm new to this, but lack of training and guiding is what gives me anxiety. Everything is huge (codebases, databases, everything) and even the field the company's software is for, is very foreign to me. The HR ""training"" was good and I was told that the other employees will help me out, but in fact they all seem to be very distant and while they do help a bit, I feel like they want to get out of the situation asap. My first days have been going through codebase and db and trying to figure out how everything works. I was given a task to implement a small feature, but no one is aware of that and the answers I get, don't necessarily answer my questions. I feel overwhelmed, anxious and exhausted already. I feel like I'm supposed to do stuff already, but I also feel like I'm a burden. The team is quite small and everyone got their hands full of work already. I know a lot of you have been in this same situation. Did things figure themselves out at a time or how it ended? Cheers!"
+
+**Stretch label — what this captures that the other three miss:**
+
+> **Declaration note:** `experience_sharing` was designed alongside the other three labels in Milestone 2 (commit `74acff4`), but I did not declare it as a stretch item at the time. I am declaring it after the fact, with my TF's approval.
+
+The other three labels all describe a _request_: fix my code (`technical_help`), help me learn (`learning_guidance`), or help me choose (`development_decision`). But `r/learnprogramming` also has posts that ask for nothing: someone celebrating a 100% on their first Java exam, sharing a LeetCode solution they're proud of, or posting an open-source learning tool they built. Without this label, those posts would have to be forced into a request label they don't actually make. It traces back to the "Learning Struggles and Experiences" distinction I noticed while reading in Milestone 1, and it holds 19 of my 210 posts (9%).
+
+**What it changed:** adding it is why my multiple-request rule needed a final step: if neither the title nor the body contains a specific request, the post is `experience_sharing`. It also became the fallback for posts that fit no label, which is how I found the four I excluded and replaced (see `data/excluded_posts.csv`).
+
+It is also my weakest label. It was involved in most of the failures when I stress-tested my definitions, the first trained model never predicted it, and with only 3 examples in the test split its scores will be the least stable of the four.
 
 ### The hardest boundary
 
