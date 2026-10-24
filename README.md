@@ -278,23 +278,26 @@ Claude Code helped with data collection, stress-testing, and initial classificat
 <!-- Both models on the same posts. `python baseline.py --trained results.json`
      prints this table for you. -->
 
-| Measure | Baseline | Trained | Difference |
-|---|---|---|---|
-| Overall accuracy |  |  |  |
-| Macro F1 |  |  |  |
-| F1 — `label_one` |  |  |  |
-| F1 — `label_two` |  |  |  |
+| Measure                     | Baseline | Trained | Difference |
+| --------------------------- | -------- | ------- | ---------- |
+| Overall accuracy            | 0.500    | 0.500   | +0.000     |
+| Macro F1                    | 0.349    | 0.167   | -0.183     |
+| F1 — `development_decision` | 0.000    | 0.000   | +0.000     |
+| F1 — `experience_sharing`   | 0.250    | 0.000   | -0.250     |
+| F1 — `learning_guidance`    | 0.703    | 0.667   | -0.036     |
+| F1 — `technical_help`       | 0.444    | 0.000   | -0.444     |
 
-**What I predicted before I looked:**
-
-<!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
-     prediction made afterwards isn't one. -->
+**What I predicted before I looked:** I expect the zero-shot baseline to outperform my fine-tuned model in overall accuracy and macro F1 because my first training run predicted only `learning_guidance`. The baseline may recognize distinctions among all four labels using their definitions without depending on my small training dataset.
 
 **What the gap actually means:**
-<!-- If the baseline matched your trained model, your fine-tuning added
-     nothing — and that is a real finding, not a failure. Say it plainly. -->
 
+My prediction was partially correct. I expected the zero-shot baseline to outperform my fine-tuned model in both accuracy and macro F1. However, both models achieved 50% accuracy on the same 32 held-out posts, while the baseline achieved a higher macro F1 score of 0.349 compared with 0.167 for the trained model.
 
+Fine-tuning did not improve overall accuracy and reduced macro F1 by approximately 0.183. The trained model predicted `learning_guidance` for all 32 posts, correctly classifying the 16 posts belonging to that category. The baseline correctly classified 16 posts as well, but recognized examples across multiple categories, including `technical_help` and `experience_sharing`.
+
+Neither model correctly identified any `development_decision` posts. This suggests that distinguishing development decisions from learning guidance may be particularly difficult for the models. I will investigate whether this pattern continues across three training seeds and examine the confusion matrix to identify which labels are being confused.
+
+The small dataset, class imbalance, and limited training may also have contributed to the fine-tuned model's performance, but further evaluation is needed to determine the cause.
 
 ---
 
