@@ -306,31 +306,44 @@ The small dataset, class imbalance, and limited training may also have contribut
 <!-- Five criteria across three seeds. The notebook's section 6 prints the
      spread table; the Target and Verdict columns are yours. -->
 
-| Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
-|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| Criterion                           | Target                    | Seed 42 | Seed 7 | Seed 2024 | Verdict                    |
+| ----------------------------------- | ------------------------- | ------- | ------ | --------- | -------------------------- |
+| 1. Overall accuracy                 | ≥ 0.60                    | 0.500   | 0.500  | 0.500     | Missed                     |
+| 2. Every label's F1 (lowest shown)  | ≥ 0.50                    | 0.000   | 0.000  | 0.000     | Missed                     |
+| 3. `learning_guidance` F1           | ≥ 0.65 on all three seeds | 0.667   | 0.667  | 0.667     | Met                        |
+| 4. Largest label's share of dataset | ≤ 50%                     | 50.0%   | 50.0%  | 50.0%     | Met (at the limit)         |
+| 5. Agreement with staff set         | ≥ 75%                     | —       | —      | —         | Pending (agreement report) |
+
+**Device:** all three seeds ran on `mps` (Apple Silicon GPU), torch 2.14.1, 3 epochs, learning rate 2e-5, batch size 16. Matrix shown is from seed 42.
+
+**Three-seed interpretation:**
+
+The accuracy spread across seeds 42, 7, and 2024 was 0.000 because all three runs achieved the same accuracy of 50%. The model predicted `learning_guidance` for every test post, and each stratified test split contained 16 `learning_guidance` posts out of 32. As a result, the model correctly classified exactly half of the posts in every run.
+
+Although the zero spread shows consistent results across the three seeds, it does not mean the model learned to classify all four categories successfully. Instead, it consistently relied on predicting the majority label.
 
 ### Confusion matrix
 
 <!-- ⚠️ TYPED AS A MARKDOWN TABLE. The notebook prints one ready to paste.
      An image of a matrix earns nothing. -->
 
-| true \ predicted |  |  |  |
-|---|---|---|---|
-| **** |  |  |  |
-| **** |  |  |  |
-| **** |  |  |  |
+| true \ predicted         | technical_help | learning_guidance | development_decision | experience_sharing |
+| ------------------------ | -------------- | ----------------- | -------------------- | ------------------ |
+| **technical_help**       | 0              | 3                 | 0                    | 0                  |
+| **learning_guidance**    | 0              | 16                | 0                    | 0                  |
+| **development_decision** | 0              | 10                | 0                    | 0                  |
+| **experience_sharing**   | 0              | 3                 | 0                    | 0                  |
+
+Biggest confusion: 10 real `development_decision` posts called `learning_guidance`.
+The other direction: 0 real `learning_guidance` posts called `development_decision`.
 
 **My biggest off-diagonal number, and what it means:**
-<!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
-     direction. "7 real analysis posts were called hot_take and only 3 went the
-     other way" is a direction, not just an error rate. -->
 
+The largest misclassification was 10 actual `development_decision` posts incorrectly predicted as `learning_guidance`, while no `learning_guidance` posts were predicted as `development_decision`.
 
+This indicates a strong directional bias toward `learning_guidance`. The model failed to recognize requests about implementation choices, project directions, and career decisions as a separate category. However, since all 32 posts were classified as `learning_guidance`, the problem extends beyond this single label boundary.
+
+The identical results across seeds 42, 7, and 2024 suggest that this behavior is consistent across the evaluated splits rather than being caused by one unfavorable random seed. I will use the staff-agreement exercise to investigate whether inconsistent labeling contributed to the problem.
 
 ---
 
