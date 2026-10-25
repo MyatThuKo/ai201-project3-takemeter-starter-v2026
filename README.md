@@ -306,13 +306,13 @@ The small dataset, class imbalance, and limited training may also have contribut
 <!-- Five criteria across three seeds. The notebook's section 6 prints the
      spread table; the Target and Verdict columns are yours. -->
 
-| Criterion                           | Target                    | Seed 42 | Seed 7 | Seed 2024 | Verdict                    |
-| ----------------------------------- | ------------------------- | ------- | ------ | --------- | -------------------------- |
-| 1. Overall accuracy                 | ≥ 0.60                    | 0.500   | 0.500  | 0.500     | Missed                     |
-| 2. Every label's F1 (lowest shown)  | ≥ 0.50                    | 0.000   | 0.000  | 0.000     | Missed                     |
-| 3. `learning_guidance` F1           | ≥ 0.65 on all three seeds | 0.667   | 0.667  | 0.667     | Met                        |
-| 4. Largest label's share of dataset | ≤ 50%                     | 50.0%   | 50.0%  | 50.0%     | Met (at the limit)         |
-| 5. Agreement with staff set         | ≥ 75%                     | —       | —      | —         | Pending (agreement report) |
+| Criterion                           | Target                    | Seed 42 | Seed 7 | Seed 2024 | Verdict                       |
+| ----------------------------------- | ------------------------- | ------- | ------ | --------- | ----------------------------- |
+| 1. Overall accuracy                 | ≥ 0.60                    | 0.500   | 0.500  | 0.500     | Missed                        |
+| 2. Every label's F1 (lowest shown)  | ≥ 0.50                    | 0.000   | 0.000  | 0.000     | Missed                        |
+| 3. `learning_guidance` F1           | ≥ 0.65 on all three seeds | 0.667   | 0.667  | 0.667     | Met                           |
+| 4. Largest label's share of dataset | ≤ 50%                     | 50.0%   | 50.0%  | 50.0%     | Met (at the limit)            |
+| 5. Agreement with staff set         | ≥ 75%                     | —       | —      | —         | Met (agreement scored at 93%) |
 
 **Device:** all three seeds ran on `mps` (Apple Silicon GPU), torch 2.14.1, 3 epochs, learning rate 2e-5, batch size 16. Matrix shown is from seed 42.
 
@@ -383,7 +383,7 @@ The identical results across seeds 42, 7, and 2024 suggest that this behavior is
      data/staff_taxonomy.md, not your own — so every argument below is made
      from those definitions and those decision rules. -->
 
-**Agreement rate:** ___ / 30 = ___%
+**Agreement rate:** 28 / 30 = 93%
 
 <!-- Nobody grades this number. A 60% who argues every disagreement from the
      stated rules beats a 95% who wrote "staff was right" nine times. Several
@@ -406,26 +406,29 @@ The identical results across seeds 42, 7, and 2024 suggest that this behavior is
      what you did across your own 200. -->
 
 **1.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
+
+> _The post:_ sp_019 - Nobody actually enjoys the long run. They enjoy having done it, which is a completely different thing, and the sport would be more honest if it said so.
+
+> _Staff said / I said:_ `hot_take` / `analysis`
+
+> _My call, and why:_ The post distinguishes between enjoying a long run and enjoying having completed it. I interpreted this distinction as an argument supporting the author's conclusion. However, the staff taxonomy requires a specific, checkable fact that actively supports the argument. The author provides no such evidence for the sweeping claim that nobody enjoys long runs. I agree that hot_take is the better-supported label. This follows Rule 1 of the staff taxonomy: an `analysis` label requires a specific, checkable fact that supports the argument. Neither post provides that supporting evidence.
+
+> _Which pile:_ (a) the rule covered it and you applied it loosely — a consistency problem
 
 **2.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
+
+> _The post:_ sp_020 - Every injury thread on this forum is the same injury and the same three replies.
+
+> _Staff said / I said:_ `hot_take` / `analysis`
+
+> _My call, and why:_ I interpreted the claim that injury threads contain similar discussions as an analysis of a recurring pattern. The claim is potentially verifiable, but the author provides no actual examples, comparisons, or supporting evidence. The staff rules require evidence to support the conclusion, not merely a claim that could be investigated. Therefore, I agree with the staff's hot_take classification. This follows Rule 1 of the staff taxonomy: an `analysis` label requires a specific, checkable fact that supports the argument. Neither post provides that supporting evidence.
+
+> _Which pile:_ (a) the rule covered it and you applied it loosely — a consistency problem
 
 **What the pattern in my disagreements tells me:**
+Both disagreements came from interpreting arguments or potentially verifiable claims as `analysis` without checking whether the author provided supporting evidence. The staff taxonomy helped me distinguish between a statement that could be verified and an argument actually supported by a checkable fact.
 
-
+The 93% agreement rate suggests that I can generally apply the staff's written definitions consistently. However, this agreement exercise used a different three-label taxonomy from my own four-label TakeMeter classifier, so it does not establish that my training labels were free of inconsistencies.
 
 ---
 
