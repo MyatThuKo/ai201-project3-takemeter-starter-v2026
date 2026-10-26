@@ -485,24 +485,146 @@ The 93% agreement rate suggests that I can generally apply the staff's written d
 
 **What I changed:**
 
+For Milestone 5, I increased the number of training epochs from 3 to 10 while keeping the other training settings unchanged: learning rate `2e-5`, batch size 16, maximum token length 128, and base model `distilbert-base-uncased`. I also kept the same dataset, four-label taxonomy, random seeds (42, 7, and 2024), and five acceptance criteria.
+
+After evaluating the 10-epoch results, I conducted an additional exploratory experiment using 13 epochs to investigate whether further training would improve classification performance. No other settings or labels were changed.
+
+I retained 10 epochs as my primary Milestone 5 improvement because it was the originally planned change. The 13-epoch results are reported separately rather than replacing the first experiment.
+
 **Which diagnosis pointed at it:**
 
-### Run Log — After
+In Milestone 4, I identified majority-class collapse as the direct reason my original model failed the overall accuracy and per-label F1 criteria. Across all three seeds, the 3-epoch model predicted `learning_guidance` for every test post, resulting in 50% accuracy and a macro F1 score of 0.167.
 
-| Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
-|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+My dataset contains 210 labeled posts, with approximately 147 available for training in each split. I suspected that three training epochs were insufficient for DistilBERT to learn meaningful distinctions between the four categories.
 
-**Did it help, and how do I know:**
+The zero-shot baseline achieved the same overall accuracy but a higher macro F1 score of 0.349, suggesting that useful classification signals existed in the posts but were not being learned effectively by my fine-tuned model.
 
-<!-- If it didn't, say so. Relabelling that didn't help is a genuinely
-     interesting result and earns full credit. -->
+I chose to increase the training duration because it was a single, measurable configuration change. This allowed me to investigate whether additional training could reduce majority-class collapse without simultaneously modifying the dataset, taxonomy, or other hyperparameters.
 
+### Run Log — After (10 Epochs)
 
+This was my primary Milestone 5 improvement, increasing training from 3 to 10 epochs.
+
+| Criterion                          | Target              | Seed 42 | Seed 7 | Seed 2024 | Verdict     |
+| ---------------------------------- | ------------------- | ------- | ------ | --------- | ----------- |
+| 1. Overall accuracy                | ≥ 0.60 on all seeds | 0.625   | 0.594  | 0.656     | Missed      |
+| 2. Every label's F1 (lowest shown) | ≥ 0.50 on all seeds | 0.000   | 0.000  | 0.000     | Missed      |
+| 3. `learning_guidance` F1          | ≥ 0.65 on all seeds | 0.727   | 0.714  | 0.744     | Met         |
+| 4. Largest label's share           | ≤ 50%               | 50.0%   | 50.0%  | 50.0%     | Met         |
+| 5. Staff agreement                 | ≥ 75%               | —       | —      | —         | Met (93.3%) |
+
+**Detailed results — 10 epochs**
+
+| Measure                     | Seed 42 | Seed 7 | Seed 2024 | Spread |
+| --------------------------- | ------- | ------ | --------- | ------ |
+| Overall accuracy            | 0.625   | 0.594  | 0.656     | 0.062  |
+| Macro F1                    | 0.477   | 0.386  | 0.501     | 0.116  |
+| F1 — `technical_help`       | 1.000   | 0.400  | 0.800     | 0.600  |
+| F1 — `learning_guidance`    | 0.727   | 0.714  | 0.744     | 0.030  |
+| F1 — `development_decision` | 0.182   | 0.429  | 0.462     | 0.280  |
+| F1 — `experience_sharing`   | 0.000   | 0.000  | 0.000     | 0.000  |
+
+**Confusion matrix — 10 epochs, seed 42**
+
+| True \ Predicted         | technical_help | learning_guidance | development_decision | experience_sharing |
+| ------------------------ | -------------- | ----------------- | -------------------- | ------------------ |
+| **technical_help**       | 3              | 0                 | 0                    | 0                  |
+| **learning_guidance**    | 0              | 16                | 0                    | 0                  |
+| **development_decision** | 0              | 9                 | 1                    | 0                  |
+| **experience_sharing**   | 0              | 3                 | 0                    | 0                  |
+
+**Did the 10-epoch improvement help?**
+
+Yes. Increasing training from 3 to 10 epochs improved accuracy and macro F1 across all three seeds. Mean accuracy increased from 0.500 to 0.625, while mean macro F1 increased from 0.167 to approximately 0.455.
+
+The model also began recognizing categories other than `learning_guidance`. For seed 42, it correctly classified all three `technical_help` posts and one `development_decision` post. Previously, the model had predicted `learning_guidance` for every test post.
+
+However, the improvement did not satisfy all acceptance criteria. Seed 7 achieved an accuracy of 0.594, below the required 0.60, and several categories still had F1 scores below 0.50.
+
+The largest remaining confusion in seed 42 was between `development_decision` and `learning_guidance`, with nine development decisions incorrectly classified as learning guidance. In addition, `experience_sharing` was never predicted across any of the three seeds.
+
+The accuracy spread increased from 0.000 to 0.062, and the macro F1 spread increased from 0.000 to 0.116. This indicated that the model was learning more distinctions but that performance varied across seeds.
+
+Overall, the 10-epoch experiment supports my hypothesis that limited training contributed to the original majority-class collapse. Nevertheless, additional training alone did not completely resolve the classification problems.
+
+### Additional Experiment — 13 Epochs
+
+After evaluating the planned 10-epoch improvement, I conducted an additional exploratory experiment using 13 epochs while keeping the dataset, model, label taxonomy, seeds, and other training settings unchanged.
+
+I wanted to investigate whether further training would help the model distinguish `development_decision` from `learning_guidance`, since this remained the largest source of confusion in the 10-epoch experiment.
+
+The 13-epoch run is exploratory evidence, not a second improvement or a stretch claim; it changes the same setting further.
+
+**Run Log — 13 Epochs**
+
+| Criterion                          | Target              | Seed 42 | Seed 7 | Seed 2024 | Verdict     |
+| ---------------------------------- | ------------------- | ------- | ------ | --------- | ----------- |
+| 1. Overall accuracy                | ≥ 0.60 on all seeds | 0.625   | 0.594  | 0.719     | Missed      |
+| 2. Every label's F1 (lowest shown) | ≥ 0.50 on all seeds | 0.000   | 0.000  | 0.000     | Missed      |
+| 3. `learning_guidance` F1          | ≥ 0.65 on all seeds | 0.686   | 0.718  | 0.789     | Met         |
+| 4. Largest label's share           | ≤ 50%               | 50.0%   | 50.0%  | 50.0%     | Met         |
+| 5. Staff agreement                 | ≥ 75%               | —       | —      | —         | Met (93.3%) |
+
+**Detailed results — 13 epochs**
+
+| Measure                     | Seed 42 | Seed 7 | Seed 2024 | Spread |
+| --------------------------- | ------- | ------ | --------- | ------ |
+| Overall accuracy            | 0.625   | 0.594  | 0.719     | 0.125  |
+| Macro F1                    | 0.546   | 0.397  | 0.564     | 0.167  |
+| F1 — `technical_help`       | 1.000   | 0.400  | 0.800     | 0.600  |
+| F1 — `learning_guidance`    | 0.686   | 0.718  | 0.789     | 0.104  |
+| F1 — `development_decision` | 0.500   | 0.471  | 0.667     | 0.196  |
+| F1 — `experience_sharing`   | 0.000   | 0.000  | 0.000     | 0.000  |
+
+**Confusion matrix — 13 epochs, seed 42**
+
+| True \ Predicted         | technical_help | learning_guidance | development_decision | experience_sharing |
+| ------------------------ | -------------- | ----------------- | -------------------- | ------------------ |
+| **technical_help**       | 3              | 0                 | 0                    | 0                  |
+| **learning_guidance**    | 0              | 12                | 4                    | 0                  |
+| **development_decision** | 0              | 5                 | 5                    | 0                  |
+| **experience_sharing**   | 0              | 2                 | 1                    | 0                  |
+
+**What changed at 13 epochs?**
+
+The 13-epoch experiment improved mean accuracy from 0.625 to approximately 0.646 and mean macro F1 from 0.455 to approximately 0.502 compared with 10 epochs.
+
+The most meaningful improvement was in `development_decision`. Mean F1 increased from approximately 0.357 at 10 epochs to 0.546 at 13 epochs. For seed 42, the model correctly identified five of ten `development_decision` posts, compared with only one at 10 epochs.
+
+However, this improvement came with additional confusion in the opposite direction. Four actual `learning_guidance` posts were incorrectly classified as `development_decision` in seed 42. The model was no longer overwhelmingly predicting `learning_guidance`, but the boundary between these categories remained difficult in both directions.
+
+The additional training also increased performance variability. Accuracy spread increased from 0.062 at 10 epochs to 0.125 at 13 epochs, exceeding the assignment's guideline of a 0.10 spread. This suggests that the model's performance is sensitive to the random seed or dataset split, although the experiment does not identify the exact source of that variability.
+
+Seed 7 remained below the 0.60 accuracy target at 0.594, and `experience_sharing` still received an F1 score of 0.000 across all three seeds.
+
+Therefore, 13 epochs improved average performance, particularly for `development_decision`, but did not satisfy any additional acceptance criteria.
+
+### Comparison — Before, 10 Epochs, and 13 Epochs
+
+| Measure                 | Original (3 epochs) | 10 epochs | 13 epochs |
+| ----------------------- | ------------------- | --------- | --------- |
+| Mean accuracy           | 0.500               | 0.625     | 0.646     |
+| Mean macro F1           | 0.167               | 0.455     | 0.502     |
+| Lowest accuracy         | 0.500               | 0.594     | 0.594     |
+| Accuracy spread         | 0.000               | 0.062     | 0.125     |
+| Macro F1 spread         | 0.000               | 0.116     | 0.167     |
+| Acceptance criteria met | 3 of 5              | 3 of 5    | 3 of 5    |
+
+**Did it help, and how do I know?**
+
+Both experiments demonstrated that increasing training duration improved the model compared with the original 3-epoch configuration.
+
+The 10-epoch experiment reduced majority-class collapse and allowed the model to recognize some `technical_help` and `development_decision` posts. The 13-epoch experiment further improved average macro F1 and substantially improved recognition of `development_decision`.
+
+However, neither configuration met all five acceptance criteria. Both missed the overall accuracy target because seed 7 remained below 0.60, and both missed the every-label F1 target because `experience_sharing` remained at 0.000.
+
+The 13-epoch experiment achieved higher average performance but also greater variability, with an accuracy spread of 0.125 compared with 0.062 for 10 epochs.
+
+I retained 10 epochs as the primary Milestone 5 improvement because it was the originally planned, controlled change and had more consistent accuracy across the three seeds. I documented the 13-epoch experiment separately because it provides additional evidence that more training can improve some label distinctions without resolving the entire classification problem.
+
+The results suggest that training duration was an important contributor to the original model's failure, but that additional epochs alone cannot address the remaining weaknesses. In particular, the classifier still cannot recognize `experience_sharing` and continues to confuse `learning_guidance` with `development_decision`.
+
+For future improvements, I would investigate the limited number of `experience_sharing` examples and audit the labeling consistency of the learning-versus-development boundary rather than continuing to increase training epochs.
 
 ---
 
