@@ -258,6 +258,14 @@ The confusion matrix showed that the model predicted `learning_guidance` for all
 - _What came back:_ Claude Code assigned labels to all 190 posts and flagged 51 as uncertain because they could reasonably fit multiple categories. Initially, `learning_guidance` accounted for approximately 61% of the dataset.
 - _What I changed:_ I manually read and checked every AI-labeled post. I corrected 22 labels based on my own interpretation and written decision rules. For example, I classified the Rust plugin-system post as `development_decision` because the author was asking which architectural approach to take rather than reporting an existing error. I also excluded four posts that did not fit my taxonomy and reviewed their replacements. My final dataset contains 210 labeled posts.
 
+**Moment 3 — Reviewing Evaluation Results and Diagnoses (Unit 6)**
+
+- _What I asked for:_ I asked Claude Code to review my three-seed evaluation results, confusion matrices, and Milestone 4 diagnoses. I wanted help identifying why my fine-tuned model was performing poorly and whether my explanations were supported by evidence.
+
+- _What came back:_ The AI identified majority-class collapse in my original three-epoch model and pointed out that identical accuracy across seeds did not mean the classifier was reliable. Claude Code also identified two original labels that did not follow my written decision rules and found that 18 of my 22 manual corrections moved posts into `development_decision`. These findings suggested that both limited training and inconsistent labeling could have contributed to the model's failures.
+
+- _What I changed:_ I revised my diagnoses to distinguish the model's majority-class collapse from possible contributing factors, including insufficient examples for smaller categories and inconsistent application of the `development_decision` rules. I then increased training from 3 to 10 epochs as my primary experiment and evaluated an additional exploratory 13-epoch run. I kept my original acceptance criteria unchanged and used the resulting metrics to determine which problems remained unresolved.
+
 **Pre-labelling disclosure:**
 
 I used Claude to write the script that collected public Reddit posts through Reddit's RSS feed. I initially explored `r/soccer`, but the posts were dominated by video highlights and had insufficient written content for my classification task. A few days after downloading those data, some of the posts were blocked/deleted by the community guidelines. I therefore switched to `r/learnprogramming`.
@@ -630,47 +638,86 @@ For future improvements, I would investigate the limited number of `experience_s
 
 ## What's Still Broken
 
-<!-- For each criterion still missed: what you'd do, and why you stopped. -->
+After increasing training from 3 to 10 epochs and conducting an additional exploratory run at 13 epochs, my model improved but still failed two of my five acceptance criteria.
 
+### Criterion 1 — Overall Accuracy (Still Missed)
 
+My target was at least 60% accuracy on all three seeds. At 10 epochs, the model achieved 0.625, 0.594, and 0.656. At 13 epochs, it achieved 0.625, 0.594, and 0.719.
 
-**The gap between what I meant my labels to capture and what the model
-learned:**
-<!-- Two sentences. Your confusion matrix is the evidence. -->
+Although the average accuracy improved compared with the original 3-epoch model, seed 7 remained below the required threshold at 0.594 in both experiments.
 
+Performance also became less consistent as I increased training duration. The accuracy spread increased from 0.062 at 10 epochs to 0.125 at 13 epochs, exceeding the assignment's 0.10 stability guideline.
 
-<!-- Two sentences. Your confusion matrix is the evidence. -->
+**What I would try next:**
+
+I would investigate why performance differs across random seeds by reviewing the training and test splits, particularly the posts near the boundary between `learning_guidance` and `development_decision`.
+
+I would also consider collecting more labeled examples so that each training split contains a larger and more representative sample of the four categories. A larger dataset could help reduce the influence of individual posts on the evaluation results.
+
+### Criterion 2 — Every Label's F1 (Still Missed)
+
+My target was an F1 score of at least 0.50 for every label across all three seeds.
+
+At 10 epochs, `technical_help`, `development_decision`, and `experience_sharing` remained below the target in at least one seed.
+
+The 13-epoch experiment improved `development_decision`, with F1 scores of 0.500, 0.471, and 0.667. However, `technical_help` still scored 0.400 on seed 7, and `experience_sharing` remained at 0.000 across all three seeds.
+
+The most significant unresolved problem is `experience_sharing`. Despite representing 19 posts in the dataset, the model never predicted this label during either experiment.
+
+**What I would try next:**
+
+I would collect additional `experience_sharing` examples, especially posts describing programming achievements, completed projects, and personal experiences without explicitly asking for technical help or learning advice.
+
+I would also review the consistency of my existing labels, particularly the boundary between `learning_guidance` and `development_decision`.
+
+My earlier label audit identified examples that did not follow my written definitions, and the confusion matrices continued to show mistakes between these categories. Correcting clearly mislabeled posts could provide cleaner training examples without changing the taxonomy.
+
+### Why I Stopped Experimenting
+
+I stopped after the 13-epoch exploratory run because additional training improved average performance but did not satisfy any additional acceptance criteria.
+
+Increasing epochs from 10 to 13 improved mean macro F1 from 0.455 to 0.502, but it also increased the accuracy spread from 0.062 to 0.125. More training did not resolve the model's inability to predict `experience_sharing`.
+
+At this point, continuing to increase epochs would not directly address the limited number of examples for some labels or the inconsistencies identified in my dataset.
+
+A more useful next experiment would involve improving the quality and representation of the training examples instead of changing the training duration again.
+
+### The Gap Between My Intended Labels and What the Model Learned
+
+I intended my four labels to distinguish technical problems, learning questions, implementation or career decisions, and personal programming experiences, but my 13-epoch seed-42 confusion matrix showed that five `development_decision` posts were classified as `learning_guidance`, four `learning_guidance` posts were classified as `development_decision`, and no `experience_sharing` posts were correctly identified.
+
+This shows that additional training helped the model recognize technical questions and some development decisions, but it still struggled with the learning-versus-development boundary and failed to learn the distinction between personal experiences and requests for advice.
 
 <!-- ═════════════════════════════════════════════════════════════════════
 
      SUBMISSION CHECKLIST — unit 5
 
-       [ ] criteria.md has five numbered criteria, each naming a NUMBER
-       [ ] Each has a reason underneath tied to your data or taxonomy
-       [ ] labels.csv: at least 150 rows, text/label/note, ONE file not split
-       [ ] No label above 70%
-       [ ] All five unit 5 sections have real content
-       [ ] Label Taxonomy includes the decision rule for your hardest boundary
-       [ ] The Dataset includes three hard cases
-       [ ] results.json and test_split.csv committed (the notebook does this)
-       [ ] At least four new commits
-       [ ] Repository URL submitted — WRITE IT DOWN
+       [x] criteria.md has five numbered criteria, each naming a NUMBER
+       [x] Each has a reason underneath tied to your data or taxonomy
+       [x] labels.csv: at least 150 rows, text/label/note, ONE file not split
+       [x] No label above 70%
+       [x] All five unit 5 sections have real content
+       [x] Label Taxonomy includes the decision rule for your hardest boundary
+       [x] The Dataset includes three hard cases
+       [x] results.json and test_split.csv committed (the notebook does this)
+       [x] At least four new commits
+       [x] Repository URL submitted — WRITE IT DOWN
 
      SUBMISSION CHECKLIST — unit 6
 
-       [ ] Baseline vs. Trained table, with your prediction written beforehand
-       [ ] Run Log — Before, five criteria across three seeds
-       [ ] Confusion matrix TYPED AS A MARKDOWN TABLE
-       [ ] A verdict on every criterion
-       [ ] A diagnosis for every miss, using the agreement report as evidence
-       [ ] Agreement Report with every disagreement adjudicated
-       [ ] One improvement, with Run Log — After
-       [ ] What's Still Broken
-       [ ] results_three_seeds_before.json, results_three_seeds_after.json,
+       [x] Baseline vs. Trained table, with your prediction written beforehand
+       [x] Run Log — Before, five criteria across three seeds
+       [x] Confusion matrix TYPED AS A MARKDOWN TABLE
+       [x] A verdict on every criterion
+       [x] A diagnosis for every miss, using the agreement report as evidence
+       [x] Agreement Report with every disagreement adjudicated
+       [x] One improvement, with Run Log — After
+       [x] What's Still Broken
+       [x] results_three_seeds_before.json, results_three_seeds_after.json,
            baseline_results.json and
            agreement_results.json committed
-       [ ] At least four new commits
-       [ ] The SAME repository URL as last unit
+       [x] At least four new commits
+       [x] The SAME repository URL as last unit
 
      Do not delete and recreate this repository.
      ═════════════════════════════════════════════════════════════════════ -->
