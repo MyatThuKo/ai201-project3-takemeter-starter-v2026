@@ -352,26 +352,75 @@ The identical results across seeds 42, 7, and 2024 suggest that this behavior is
 <!-- MET or MISSED against LAST UNIT's target. The target has to hold across
      all three seeds, not turn up sometimes. -->
 
-| # | Criterion | Target | Verdict | How I decided |
-|---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| #   | Criterion              | Target                    | Verdict | How I decided                                                                                                                                                                                                                                                 |
+| --- | ---------------------- | ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Overall accuracy       | ≥ 0.60 on all three seeds | Missed  | All three seeds achieved 0.500 accuracy, below the 0.60 target.                                                                                                                                                                                               |
+| 2   | Every label's F1       | ≥ 0.50 on all three seeds | Missed  | `technical_help`, `development_decision`, and `experience_sharing` each scored 0.000 on all three seeds.                                                                                                                                                      |
+| 3   | `learning_guidance` F1 | ≥ 0.65 on all three seeds | Met     | All three seeds achieved an F1 score of 0.667, meeting the 0.65 target. However, this was achieved by predicting `learning_guidance` for every test post (100% recall, 50% precision), not by successfully distinguishing the category from the other labels. |
+| 4   | Largest label's share  | ≤ 50%                     | Met     | `learning_guidance` accounts for 105 of 210 posts (50%).                                                                                                                                                                                                      |
+| 5   | Staff agreement        | ≥ 75%                     | Met     | 28 of 30 labels agreed with staff (93.3%).                                                                                                                                                                                                                    |
 
 **Diagnoses**
 
-<!-- For each miss: the cause, and how you know. The four common causes are:
-     too few examples for a label, a boundary you applied inconsistently, a
-     genuinely hard label pair, and a task the model can't reach from this
-     much data.
+### Criterion 1 — Overall Accuracy (Missed)
 
-     ⚠️ Use your agreement report as evidence. It is the only instrument you
-     have that can tell a LABELLING problem from a MODEL problem, and this
-     section is graded on whether you used it that way. -->
+**Target:** At least 60% accuracy on each of the three seeds.
 
+**Observed:** All three seeds achieved 50% accuracy, with a spread of 0.000.
 
+**Diagnosis — Majority-class collapse**
+
+The direct cause of the accuracy failure was majority-class collapse. The trained model predicted `learning_guidance` for every test post across all three seeds. Because each stratified test split contained 16 `learning_guidance` posts out of 32, predicting this label exclusively resulted in exactly 50% accuracy for every run.
+
+The training dataset was imbalanced: `learning_guidance` represented 105 of 210 posts (50%), while `technical_help` and `experience_sharing` represented only 21 and 19 posts, respectively. With approximately 147 training posts and only three training epochs, the model had limited opportunities to learn the distinctions between the four categories. The class imbalance and limited training may have contributed to the model's collapse into predicting the majority label.
+
+The zero-shot baseline achieved the same 50% accuracy but a higher macro F1 score of 0.349, compared with 0.167 for my fine-tuned model. It also correctly identified some `technical_help` and `experience_sharing` posts, while my trained model never predicted either category. This suggests that useful classification signals exist in the text, but my fine-tuned model failed to learn them effectively under the current training configuration.
+
+My staff-agreement exercise produced 93.3% agreement (28 out of 30 posts), suggesting that I can generally apply written labeling rules consistently. However, my two disagreements revealed a tendency to assign labels based on resemblance without fully checking whether their definitions were satisfied. Since the staff exercise used a different three-label taxonomy, these results do not prove that my own four-label dataset was consistently labeled. Instead, they provide additional reason to examine my labeling decisions.
+
+Overall, the model's majority-class collapse directly explains why Criterion 1 failed. The dataset imbalance, limited training examples, and potential labeling inconsistencies provide possible explanations for why the model developed this behavior.
+
+### Criterion 2 — Every Label's F1 (Missed)
+
+**Target:** At least 0.50 F1 for every label on each of the three seeds.
+
+**Observed:** `technical_help`, `development_decision`, and `experience_sharing` each achieved an F1 score of 0.000 across all three seeds. Only `learning_guidance` achieved 0.667.
+
+**Diagnosis — Limited training examples and inconsistent label application**
+
+The model failed to recognize three of the four categories across all three seeds. The confusion matrix shows that it classified every test post as `learning_guidance`, resulting in F1 scores of 0.000 for `technical_help`, `development_decision`, and `experience_sharing`.
+
+**Limited examples for `technical_help` and `experience_sharing`**
+
+These two categories contained only 21 and 19 posts in the full dataset, leaving approximately 15 and 13 training examples, respectively. Each category had only three test examples in every evaluated seed.
+
+The zero-shot baseline achieved F1 scores of 0.444 for `technical_help` and 0.250 for `experience_sharing`, demonstrating that some examples could be identified from their text and label definitions. However, my fine-tuned model never predicted either category.
+
+The limited number of training examples is therefore a likely contributing cause of these failures. The baseline results suggest that the categories are distinguishable in at least some cases, but my current training configuration did not provide sufficient learning for the model to recognize them reliably.
+
+**Inconsistent labeling of `development_decision`**
+
+For `development_decision`, insufficient examples alone is a less convincing explanation because the category contains 65 posts. For `development_decision`, insufficient examples alone is a less convincing explanation because the category contains 65 posts. Despite this, all 10 `development_decision` examples in every seed's test split were incorrectly classified as `learning_guidance`. Even the zero-shot baseline achieved an F1 score of 0.000 for this category. Even the zero-shot baseline achieved an F1 score of 0.000 for this category.
+
+The boundary between `learning_guidance` and `development_decision` is particularly difficult because both categories can involve programming languages, projects, and career development. My taxonomy distinguishes them based on whether the author is asking what or how to learn versus making an implementation, project, or career decision.
+
+However, reviewing my original dataset revealed that I did not always apply this distinction consistently.
+
+For example, I labeled "I wanna ask how to develop logic in coding" as `development_decision`, although it asks how to improve a programming skill and therefore fits `learning_guidance` under my definitions.
+
+Similarly, I labeled "In the age of AI... should I even get back to programming" as `experience_sharing`, even though its career-related question better fits `development_decision`.
+
+Additionally, 18 of my 22 manual labeling corrections moved posts into `development_decision`. This shows that many of my initial classifications differed from my later application of that category's definition, although the correction count alone does not prove those revisions were inconsistent.
+
+My staff-agreement exercise provides supporting context. Both disagreements involved applying the `analysis` label to posts that resembled an argument but lacked the supporting evidence required by the definition. Those mistakes occurred under a different taxonomy, but they revealed a similar risk of applying labels without fully satisfying their decision rules.
+
+Together, the concrete inconsistencies in my dataset and the difficult boundary between learning and career or implementation decisions support a diagnosis of inconsistent label application around `development_decision`. This may have made the distinction harder for the model to learn.
+
+**Overall diagnosis**
+
+Criterion 2 failed because the model collapsed into predicting `learning_guidance` for every post. The evidence identifies two contributing problems: limited training representation for `technical_help` and `experience_sharing`, and inconsistent application of the `development_decision` labeling rules.
+
+These findings provide two possible improvement directions. For Milestone 5, I will choose one targeted change based on this diagnosis, keep the original acceptance criteria unchanged, and compare the results against the three original training seeds.
 
 ---
 
